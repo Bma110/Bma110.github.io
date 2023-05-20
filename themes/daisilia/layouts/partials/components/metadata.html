@@ -1,0 +1,70 @@
+<ul class="meta-section">
+  {{- with .Date -}}
+  <li class="meta-item">
+      <i class="fas fa-calendar"></i>
+      <span class="meta-item-text">Published on</span>
+      <span class="meta-item-value">{{ .Format "2006-01-02" }}</span>
+  </li>
+  {{- end -}}
+  <li class="meta-item">
+    <i class="fas fa-clock"></i>
+    <span class="meta-item-text">Modified on</span>
+    <span class="meta-item-value">{{ .Lastmod.Format "2006-01-02" }}</span>
+  </li>
+  {{- with .Params.author -}}
+    <li class="meta-item">
+      <i class="fas fa-user"></i>
+      <span class="meta-item-text">Author:</span>
+      <span class="meta-item-value">{{ . }}</span>
+    </li>
+  {{- else -}}
+  {{- end -}}
+  {{- with .Params.coauthors -}}
+    <li class="meta-item">
+      <i class="fas fa-users"></i>
+      <span class="meta-item-text">Co-Authors:</span>
+      <span class="meta-item-value">{{ delimit . ", " }}</span>
+    </li>
+  {{- end -}}
+</ul>
+{{- if or .Params.tags .Params.categories -}}
+  <ul class="meta-section">
+    {{- with .Params.tags -}}
+      <li class="meta-item">
+        <i class="fas fa-tag{{ if gt (len .) 1 }}s{{ end }}"></i>
+        <span class="meta-item-text">Tag{{ if gt (len .) 1 }}s{{ end }}:</span>
+        <span class="meta-item-value">{{ range $i,$v := . }}{{ if ne $i 0 }}, {{ end }}<a class="tag" href="/tags/{{ $v | urlize }}">{{ $v }}</a>{{end}}</span>
+      </li>
+    {{- end -}}
+    {{- with .Params.categories -}}
+      <li class="meta-item"><i class="fas fa-th-list"></i>
+        <span class="meta-item-text">Categor{{ if gt (len .) 1 }}ies{{ else }}y{{ end }}:</span>
+        <span class="meta-item-value">{{ range $i,$v := . }}{{ if ne $i 0 }}, {{ end }}<a class="category" href="/categories/{{ $v | urlize }}">{{ $v }}</a>{{end}}</span>
+      </li>
+    {{- end -}}
+    {{- with .Parent -}}
+      <li class="meta-item"><i class="fas fa-folder-open"></i>
+        <span class="meta-item-text">In</span>
+        <a class="meta-item-value" href="{{ .RelPermalink }}">{{ .Title }}</a>
+      </li>
+    {{- end -}}
+  </ul>
+{{- end -}}
+{{- if .Content -}}
+  <ul class="meta-section">
+    <li class="meta-item">
+      <i class="far fa-file-word"></i>
+      <span class="meta-item-text">Word count ≈</span>
+      <span class="meta-item-value">{{ .FuzzyWordCount }}</span>
+    </li>
+    <li class="meta-item">
+      <i class="fas fa-hourglass-start"></i>
+      <span class="meta-item-text">Reading time {{ if ne .ReadingTime 0 | and (ge .FuzzyWordCount 100) }}≈</span>
+      <span class="meta-item-value">{{ .ReadingTime }} min</span>
+      {{- else -}}≤</span>
+      <span class="meta-item-value">1 min</span>
+      {{- end -}}
+    </li>
+  </ul>
+{{- end -}}
+{{- /* vim:set ft=gohtmltmpl ts=2 sw=2: */ -}}

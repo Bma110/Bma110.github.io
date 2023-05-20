@@ -1,0 +1,57 @@
+{{- $id := .Get "id" -}}
+{{- $fancybox := default .Site.Params.daisy.fancybox.enable (.Get "fancybox") -}}
+{{- $crossrefs := false -}}
+{{- if $id -}}{{- if and site.Data.refs .Page.File -}}{{- if index site.Data.refs .Page.File.Path -}}{{- if index (index site.Data.refs .Page.File.Path).link_here $id -}}
+{{- $crossrefs = true -}}
+{{- end -}}{{- end -}}{{- end -}}{{- end -}}
+{{- $src := .Get "src" | safeURL -}}
+{{- if not (findRE "^(ftp|sftp|file|ftps?|gemini|git|gopher|https?|ircs?|kitty|mailto|news|ssh)://|^/" $src) -}}
+    {{- $src = print .Page.Permalink $src -}}
+{{- end -}}
+<figure
+  {{- with .Get "class" }} class="{{ . }}"{{ end -}}
+  {{- with $id }} id="{{ . }}"{{ end -}}
+  {{- with .Get "width" }} style="width:{{ . }}"{{ end -}}
+>
+  {{- if .Get "embed" -}}
+    {{- with resources.GetRemote $src }}
+      {{- with .Err -}}
+        {{- errorf "The %q shortcode was unable to get the remote SVG file. Details: %s. See %s" $.Name . $.Position -}}
+      {{- else -}}
+        <div class="diagram-scroll">
+          <div class="svg-wrap">
+            {{- .Content | safeHTML -}}
+          </div>
+        </div>
+      {{- end -}}
+    {{- end -}}
+  {{- else -}}
+    {{- if .Get "link" -}}
+    <a href="{{ .Get "link" }}"{{ with .Get "target" }} target="{{ . }}"{{ end }}{{ with .Get "rel" }} rel="{{ . }}"{{ end }}>
+    {{- else if $fancybox -}}
+    <a data-fancybox data-src="{{ $src }}">
+    {{- end -}}
+      <img src="{{ $src }}"
+        {{- if or (.Get "alt") (.Get "title") }}
+        alt="{{ with .Get "alt" }}{{ . }}{{ else }}{{ .Get "title" }}{{ end }}"
+        {{- end -}}
+        {{- with .Get "img-width" }} width="{{ . }}"{{ end -}}
+        {{- with .Get "height" }} height="{{ . }}"{{ end -}}
+      />
+    {{- if or (.Get "link") $fancybox }}</a>{{ end -}}
+  {{- end -}}
+  {{- if or (or (.Get "title") (.Get "caption")) (.Get "attr") | or $crossrefs -}}
+    <figcaption>
+      {{- if $crossrefs -}}
+        {{- partial "components/cross-refs.html" (dict "page" .Page "index" $id) -}}
+      {{- end -}}
+      {{- with (.Get "title") }}<h4 class="title">{{ . }}</h4>{{ end -}}
+      {{- if or (.Get "caption") (.Get "attr") -}}<p class="caption">
+        {{- .Get "caption" | markdownify -}}
+        {{- with .Get "attrlink" -}}<a href="{{ . }}">{{- .Get "attr" | markdownify -}}</a>{{ end -}}
+      </p>{{- end }}
+    {{- with .Get "attr" -}}<p class="attribution fig-attribution">{{ . | markdownify }}</p>{{- end -}}
+    </figcaption>
+  {{- end }}
+</figure>
+{{- /* vim:set ft=gohtmltmpl ts=2 sw=2: */ -}}

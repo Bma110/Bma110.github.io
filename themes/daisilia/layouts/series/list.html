@@ -1,0 +1,28 @@
+{{- define "main" -}}
+  <h1 class="article-title">{{ .Title }}</h1>
+  <div class="article-metadata">{{ partial "components/metadata.html" . }}</div>
+  {{- partial "components/top-refs" . -}}
+  {{- with .Content -}}
+  <div class="article-content">
+    {{- . -}}
+  </div>
+  {{- end -}}
+  {{- if (eq .File.Dir "series/") -}}
+    {{- partial "components/pagination-page-list" . -}}
+  {{- else -}}
+    {{- with .Pages -}}
+    <div class="page-list">{{ partial "components/page-list" . }}</div>
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "right" -}}
+  {{- if ne . (.GetPage "series") -}}
+    <div class="series-container">
+      <div class="series-toggle"><i class="fas fa-book"></i></div>
+      <div class="series-content">{{ partial "components/series-list" . }}</div>
+    </div>
+  {{- end -}}
+  {{- partial "components/related" . -}}
+{{- end  -}}
+{{- /* vim:set ft=gohtmltmpl ts=2 sw=2: */ -}}

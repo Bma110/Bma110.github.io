@@ -1,0 +1,83 @@
+{{- $theme := .Site.Params.daisy -}}
+{{- $page := . }}{{ if .Params.copy }}{{ $page = .GetPage .Params.copy }}{{ end -}}
+{{- $hasTOC := ge (len $page.TableOfContents) 40 -}}
+<div class="sidebar-container">
+  <div class="sidebar-nav" data-pjax>
+    {{- if $hasTOC -}}
+      <span role="button" class="sidebar-nav-item sidebar-nav-series">Table of Content</span>
+      <span role="button" class="sidebar-nav-item sidebar-nav-overview">Overview</span>
+    {{- end -}}
+  </div>
+  <div class="sidebar-content">
+    <div class="sidebar-toc sidebar-pannel" data-pjax>
+    {{- if $hasTOC -}}
+      <h1 class="toc-title" id="TOCTitle">{{ .Title }}</h1>
+      {{- $page.TableOfContents -}}
+    {{- end -}}
+    </div>
+    <div class="sidebar-overview sidebar-pannel">
+      <div class="sidebar-avatar">
+        <a href="/about"><img class="site-avatar-image" alt="{{ .Site.Author.nickname }}" src="{{ .Site.Author.avatar }}"></a>
+      </div>
+      <p class="site-author-name">{{ partial "components/getname" . }}</p>
+      <p class="site-description">{{ with $theme.description }}{{ . }}{{ else }}Subtitle here{{ end }}</p>
+      {{- with $theme.social -}}
+      <div class="sidebar-social">
+        {{- with .email -}}
+        <a class="sidebar-social-item" href="mailto:{{ . }}"><i class="fas fa-envelope"></i>E-Mail</a>
+        {{- end -}}
+        {{- with .github -}}
+        <a class="sidebar-social-item" href="{{ . }}" target="_blank"><i class="fab fa-github"></i>Github</a>
+        {{- end -}}
+        {{- with .bilibili -}}
+        <a class="sidebar-social-item" href="{{ . }}" target="_blank"><i class="fa-brands fa-bilibili"></i>Bilibili</a>
+        {{- end -}}
+      </div>
+      {{- end -}}
+      <div class="site-overview">
+        <a class="site-overview-item" href="/">
+          <p class="site-overview-num">{{ len .Site.RegularPages }}</p>
+          <p class="site-overview-name">Pages</p>
+        </a>
+        <a class="site-overview-item" href="/tags">
+          <p class="site-overview-num">{{ len .Site.Taxonomies.tags }}</p>
+          <p class="site-overview-name">Tags</p>
+        </a>
+        <a class="site-overview-item" href="/series">
+          <p class="site-overview-num">{{ len (.GetPage "series").Sections }}</p>
+          <p class="site-overview-name">Series</p>
+        </a>
+      </div>
+      {{- if $theme.calendar.enable -}}
+        {{- partial "components/calendar" . -}}
+      {{- end -}}
+      <div class="sidebar-quote collapsed">
+      {{- if $theme.quote.enable -}}
+        {{- partial "third-party/quote" . -}}
+      {{- end -}}
+      </div>
+      {{- if $theme.music.enable -}}
+      <div class="sidebar-music">{{ partial "third-party/music" . }}</div>
+      {{- end -}}
+      {{- with $theme.links -}}
+      <div class="sidebar-links">
+        <div class="sidebar-links-title"><i class="fas fa-user-friends"></i>友链</div>
+        {{- range $text,$url := . -}}
+        <a class="sidebar-links-item" href="{{ $url }}" target="_blank">{{ $text | markdownify }}</a>
+        {{- end -}}
+      </div>
+      {{- end -}}
+    </div>
+  </div>
+  <div class="back2top" id="Back2top" role="button">
+    <i class="back2top-icon fas fa-angle-double-up"></i>
+    <span class="back2top-progress" id="Back2topProgress"></span>
+  </div>
+</div>
+<div class="sidebar-toggle" id="SidebarToggle" role="button">
+  <i class="sidebar-toggle-icon right-arrow">&#xf061</i>
+  <i class="sidebar-toggle-icon bars">&#xf0c9</i>
+  <i class="sidebar-toggle-icon left-arrow">&#xf060</i>
+</div>
+<div id="SidebarFill"></div>
+{{- /* vim:set ft=gohtmltmpl ts=2 sw=2: */ -}}

@@ -1,0 +1,8 @@
+resources/
+public/
+
+trash/
+*.old
+*.back
+test/
+test.*

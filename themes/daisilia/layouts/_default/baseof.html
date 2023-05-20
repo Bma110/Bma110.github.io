@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+  {{- partial "components/opengraph" . -}} {{- /* open graph */ -}}
+  {{- block "title" . }}<title>{{ print .Title " | " .Site.Title }}</title>{{ end -}}
+  {{- partial "components/style" . -}}     {{- /* css */ -}}
+  {{- partial "components/favicon" . -}}   {{- /* favicon */ -}}
+  <script src="/js/jquery-3.6.0.min.js"></script>
+</head>
+<body class="site-root{{ if .Site.IsServer }} local-server{{ end }}" id="SiteRoot">
+  <div id="preload-mask">
+    <div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+  </div>
+  <div class="site-inner" id="SiteInner">
+    <header class="site-header" id="SiteHeader">{{ partial "header" . }}</header>
+    <div class="site-main" id="SiteMain">
+      <div class="site-left" data-pjax>{{ block "left" . }}{{ end }}</div>
+      <div class="site-message-list">{{- partial "message" . -}}</div>
+      <div class="site-content" data-pjax id="SiteContent">
+        {{- block "main" . }}{{ end -}}
+        {{- if or .Params.math .Params.mathjax -}}{{ partial "third-party/mathjax.html" . }}{{ end }}
+      </div>
+      <div class="site-comment">{{ partial "third-party/comment" . }}</div>
+      <div class="site-right" data-pjax>{{ block "right" . }}{{ end }}</div>
+    </div>
+    {{- partial "fast-search" . -}}
+    <footer class="site-footer" id="SiteFooter">{{ partial "footer" . }}</footer>
+    <aside class="site-sidebar" id="SiteSidebar">{{ partial "sidebar" . }}</aside>
+  </div>
+  <div class="loading-track"><div class="loading-progress"></div></div>
+  {{- partial "components/js" . -}} {{- /* js */ -}}
+</body>
+</html>
+{{- /* vim:set ft=gohtmltmpl ts=2 sw=2: */ -}}
