@@ -302,6 +302,14 @@ table .table-cell.left {
 code * {
     font-family: var(--font-code);
 }
+code:not(pre code) { /* inline code */
+    font-family: var(--font-code);
+    margin-top: 10px;
+    border-radius: 4px;
+    background-color: var(--inline-code-background);
+    border-left: 5px solid var(--inline-code-background);
+    border-right: 5px solid var(--inline-code-background);
+}
 pre:not(.highlight pre),
 .highlight {
     margin: 10px 0;
@@ -314,13 +322,6 @@ pre:not(.highlight pre),
 }
 .highlight pre {
     margin: 0;
-}
-code:not(pre code) { /* inline block */
-    margin-top: 10px;
-    border-radius: 4px;
-    background-color: var(--inline-code-background);
-    border-left: 5px solid var(--inline-code-background);
-    border-right: 5px solid var(--inline-code-background);
 }
 .highlight td:first-child {
     user-select: none;
@@ -950,17 +951,9 @@ blockquote a[target=_blank].cite::after {
 blockquote .quote-content, blockquote .quote-from, blockquote p {
     margin: 0;
 }
-blockquote.float-right {
-    max-width: 50%;
-    float: right;
-}
-blockquote.float-left {
-    max-width: 50%;
-    float: right;
-}
-blockquote.center .quote-content {
-    text-align: center;
-}
+blockquote.align-center .quote-content { text-align: center }
+blockquote.align-left .quote-content { text-align: left }
+blockquote.align-right .quote-content { text-align: right }
 blockquote .quote-from {
     text-align: right;
 }
