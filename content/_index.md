@@ -5,13 +5,5 @@ lastmod: 2022-11-28T16:53:08+08:00
 comments: true
 math: false
 tags:
-    - TODO
+    - CHEERFUL TAGS
 ---
-
-[test]({{< relref "test" >}})
-
-新建 content 目录下的 test.md 文件：
-
-```bash
-hugo new test.md
-```

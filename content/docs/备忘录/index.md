@@ -1,12 +1,12 @@
 ---
-title: "备忘录"
+title: "备忘录1"
 date: 2023-05-21T11:19:05+08:00
 lastmod: 2022-11-28T16:53:08+08:00
 comments: true
 math: false
 ---
 
-## 注意事项
+## 注意事项{alias="别名=ps 蒸\_汽\_波"}
 
 1. 文章标题时，标题从二级标题开始：`## xxx`
 |二级标题将作为大标，居中显示，后续标题左对齐
@@ -44,6 +44,15 @@ math: false
 - ...
 
 ### 自定义 Snippets
+
+
+[CHEERFUL]({{< relref "test" >}})
+
+新建 content 目录下的 test.md 文件：
+
+```bash
+hugo new test.md
+```
 
 markdown.json 文件示例：
 
@@ -105,3 +114,6 @@ ${<num>:<prefill text>}
 
 - `$<num>`：复制 `<num>` 号占位符
 - `$0`：移动的终点，移动到此处时结束，不能再反向移动
+
+[显示内容]({{< relref "临床常见病原微生物#葡萄球菌" >}})
+relref指向ID
