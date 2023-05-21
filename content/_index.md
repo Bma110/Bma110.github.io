@@ -8,4 +8,3 @@ math: false
 
 # Home Page
 
-hello
