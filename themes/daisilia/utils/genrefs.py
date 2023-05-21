@@ -62,9 +62,7 @@ def get_refs(path):
   in_code_block = { 'level': 0, 'type': 0, 'kroki': False }
 
   linenr = 0
-  print(path)
   for line in open(path, 'r').readlines():
-    print(line)
     linenr = linenr + 1
 
     # skip code block
