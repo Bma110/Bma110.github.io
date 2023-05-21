@@ -8,7 +8,7 @@ tags:
     - TODO
 ---
 
-[test]({{< relref "/test" >}})
+[test]({{< relref "test" >}})
 
 新建 content 目录下的 test.md 文件：
 
