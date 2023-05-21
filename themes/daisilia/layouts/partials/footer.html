@@ -1,11 +1,12 @@
 
-<div class="footer-copyright">© {{ .Site.Params.daisy.copyright.startyear }} - {{ now.Format "2006" }}
-    <img src="/images/sxin.png" alt="Big Boat" width="30px">
+<div class="footer-copyright">
     {{- if .Site.Author.homepage -}}
     <span><a href="{{ .Site.Author.homepage }}" target="_blank">{{ partial "components/getname" . }}</a></span>
     {{- else -}}
     <span>{{ partial "components/getname" . }}</span>
     {{- end -}}
+    <img src="/images/sxin.png" alt="Big Boat" width="30px">
+    © {{ .Site.Params.daisy.copyright.startyear }} - {{ now.Format "2006" }}
 </div>
 <div class="footer-powerby">
     <span>Powered by <a href="https://gohugo.io" target="_blank">Hugo</a></span>
