@@ -1,5 +1,5 @@
-title = "Aloha's Blog"
-baseURL = 'https://daisilia.com'
+title = "cheerful SDIOPID"
+baseURL = 'https://sdiopid.top'
 theme = 'daisilia'
 enableEmoji = true
 hasCJKLanguage = true
@@ -11,7 +11,7 @@ languageCode = 'zh-cn'
 defaultContentLanguage = 'zh'
 [languages.zh]
   languagedirection = 'zh'
-  title = "Aloha's Blog"
+  title = "cheerful SDIOPID"
   weight = 10
 
 # enableGitInfo = false
@@ -22,10 +22,10 @@ defaultContentLanguage = 'zh'
   publishDate = ['publishDate', 'date']
 
 [author]
-  fullname = "Qihuan Liu"
-  nickname = "Aloha"
-  avatar = "/images/avatar.jpg"
-  homepage = "https://daisilia.com"
+  fullname = "yuhuai GUO"
+  nickname = "cheerful Bma110"
+  avatar = "/images/favicon.png"
+  homepage = "https://sdiopid.com"
 
 [taxonomies]
   tag = 'tags'
