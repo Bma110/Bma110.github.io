@@ -1,1 +1,1 @@
-{"test2.md": {"file_ref": "/test2", "count": 1, "link_here": {"": {"/test": 1}}}, "test.md": {"file_ref": "/test", "count": 1, "link_here": {"": {"/_index": 1}}}}
+{"": {"file_ref": "/", "count": 1, "link_here": {"": {"/_index": 1}}}}
