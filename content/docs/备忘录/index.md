@@ -117,3 +117,5 @@ ${<num>:<prefill text>}
 
 [显示内容]({{< relref "临床常见病原微生物#葡萄球菌" >}})
 relref指向ID
+
+hugo new diary/2023/05/22.md
