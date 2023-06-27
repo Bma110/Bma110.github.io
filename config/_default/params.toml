@@ -3,9 +3,6 @@
   description  = ''
   mes_404      = 'Over the Mountains, mountains...'
   scroll_title = true
-  [daisy.copyright]
-    startyear = 2020
-    creativecommons = "by-nc-sa"
   [daisy.related]
     enable=false
   [daisy.comment]
@@ -33,7 +30,7 @@
   # [daisy.links]
   #  "**郭老师**的网络自留地" = "https://www.sdiopid.top"
   [daisy.calendar]
-    enable = false
+    enable = true
   [daisy.quote]
     enable = 'jinrishici' # or 'rainbow'
   [daisy.music]
@@ -56,3 +53,11 @@
   #   title = "Hello"
   #   type = "error" # " | default | info | warning |error"
   #   content = "This is the content of site message."
+  [daisy.footer]
+    enable = ["copyright", "poweredby", "creativecommons"]
+  [daisy.footer.copyright]
+    startyear = 2020
+    icon = '''<img src="/images/sxin.png" alt="Big Boat" width="30px">'''
+  [daisy.footer.creativecommons]
+    scheme = "by-nc-sa"
+    lang = "deed.zh"

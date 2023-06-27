@@ -1,3 +1,102 @@
+function loadScript(src, type = "text/javascript",async = true) {
+    var scriptEle = document.createElement('script');
+    scriptEle.src = src;
+    scriptEle.type = type;
+    scriptEle.async = async;
+    scriptEle.defer = true;
+
+    return new Promise((resolve, reject) => {
+        scriptEle.onload = e => resolve(e);
+        scriptEle.onerror = e => reject(e);
+        document.head.appendChild(scriptEle);
+    });
+
+}
+
+function MathJaxConfig() {
+    window.MathJax = {
+        loader: {
+            load: ['[tex]/mhchem'], // https://mhchem.github.io/MathJax-mhchem/
+            source: {
+                '[tex]/amsCd': '[tex]/amscd',
+                '[tex]/AMScd': '[tex]/amscd'
+            }
+        },
+        tex: {
+            inlineMath: {'[+]': [['$', '$']]},
+            displayMath: [
+                ["$$", "$$"],
+                ["\[\[", "\]\]"],
+            ],
+            packages: {'[+]': ['mhchem']},
+            tags: 'ams'
+        },
+        options: {
+            renderActions: {
+                findScript: [10, doc => {
+                    document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                        const display = !!node.type.match(/; *mode=display/);
+                        const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                        const text = document.createTextNode('');
+                        node.parentNode.replaceChild(text, node);
+                        math.start = {node: text, delim: '', n: 0};
+                        math.end = {node: text, delim: '', n: 0};
+                        doc.math.push(math);
+                    });
+                }, '', false],
+                insertedScript: [200, () => {
+                    document.querySelectorAll('mjx-container').forEach(node => {
+                        let target = node.parentNode;
+                        if (target.nodeName.toLowerCase() === 'li') {
+                            target.parentNode.classList.add('has-jax');
+                        }
+                    });
+                }, '', false]
+            }
+        }
+    };
+}
+
+function loadOrRefershThirdPartyScripts() {
+    // mermaid
+    if (document.getElementsByClassName("mermaid")[0]) {
+        if (window.mermaid) {
+            mermaid.run();
+        } else {
+            loadScript('https://cdn.jsdelivr.net/npm/mermaid@10.2.3/dist/mermaid.min.js')
+                .then(() => {
+                    mermaid.initialize({
+                        startOnLoad: false, // pjax:complete won't toggle startOnLoad
+                        theme: 'neutral',
+                        flowchart: {
+                            useMaxWidth: true
+                        }
+                    });
+                    mermaid.run();
+                })
+                .catch(e => {
+                    console.error("failed to load mermaid.min.js:", e)
+                });
+        }
+    }
+
+    // MathJax
+    if (document.getElementById("SiteContent").hasAttribute("mathjax")) {
+        if (window.MathJax) {
+            if (MathJax.typeset) {
+                MathJax.texReset();
+                MathJax.typeset();
+            }
+        } else {
+            MathJaxConfig();
+            loadScript('https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js')
+            .catch(e => {
+                console.error("failed to load tex-mml-chtml.js:", e);
+            });
+        }
+    }
+}
+
 function switchPannel(n){
     let navs = document.getElementsByClassName("sidebar-nav-item");
     let pannels = document.getElementsByClassName("sidebar-pannel");
@@ -30,11 +129,24 @@ function toggleSidebar(force){
 }
 
 // generate numbers for lists
+function searchIndex(anchor) {
+    let heading = document.querySelector(".heading".concat(anchor));
+    if (heading && heading.hasAttribute("index")) {
+        return Number(heading.getAttribute("index"))
+    }
+    return 0;
+}
 function genUlNum(ulNode, nums = [0]){
     for(let i = 0; i < ulNode.childElementCount; i++){
         nums[nums.length-1] += 1;
         if(ulNode.children[i].childElementCount > 1) {
             genUlNum(ulNode.children[i].children[1], nums.concat(0));
+        }
+        if (ulNode.parentNode.id == "TableOfContents") {
+            let index = searchIndex(ulNode.children[i].children[0].getAttribute("href"));
+            if (index) {
+                nums[nums.length-1] = index;
+            }
         }
         ulNode.children[i].children[0].innerText = nums.join(".") + ". " + ulNode.children[i].children[0].innerText;
         if(i == ulNode.childElementCount){
@@ -89,11 +201,15 @@ const TOCOnscrollObserver = new IntersectionObserver(entries => {
         }
     });
 });
+
+// on DOMContentLoaded
 window.addEventListener('DOMContentLoaded', () => {
     // Track all sections that have an `id` applied
     document.querySelectorAll('.heading').forEach((section) => {
         TOCOnscrollObserver.observe(section);
     });
+
+    loadOrRefershThirdPartyScripts();
 });
 
 // https://css-tricks.com/how-to-animate-the-details-element-using-waapi/
@@ -172,4 +288,29 @@ class Accordion {
     this.isExpanding = false;
     this.el.style.height = this.el.style.overflow = '';
   }
+}
+
+// HoverSummary
+const summaryContentEl = document.createElement("div");
+summaryContentEl.classList.add("hide");
+summaryContentEl.id = "HoverSummary";
+document.body.appendChild(summaryContentEl);
+
+const HoverSummaryMargin = 5;
+
+var summaries = {};
+fetch("/index.json").then((e)=>{e.json().then((e)=>{
+    var jsonData;
+    jsonData = e;
+    for (page of jsonData) {
+        summaries[page.permalink.toLowerCase()] = {
+            "title": page.title,
+            "summary": page.summary,
+            "tags": page.tags
+        };
+    }
+})});
+
+function offsetToBody(e, side) {
+    return e.getBoundingClientRect()[side] - document.body.getBoundingClientRect()[side];
 }

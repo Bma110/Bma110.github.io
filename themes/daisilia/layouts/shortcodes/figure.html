@@ -6,10 +6,10 @@
 {{- end -}}{{- end -}}{{- end -}}{{- end -}}
 {{- $src := .Get "src" | safeURL -}}
 {{- if not (findRE "^(ftp|sftp|file|ftps?|gemini|git|gopher|https?|ircs?|kitty|mailto|news|ssh)://|^/" $src) -}}
-    {{- $src = print .Page.Permalink $src -}}
+    {{- $src = print .Page.RelPermalink $src -}}
 {{- end -}}
 <figure
-  {{- with .Get "class" }} class="{{ . }}"{{ end -}}
+  {{- with or (.Get "class") (.Get "style") }} class="{{ . }}"{{ end -}}
   {{- with $id }} id="{{ . }}"{{ end -}}
   {{- with .Get "width" }} style="width:{{ . }}"{{ end -}}
 >

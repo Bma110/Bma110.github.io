@@ -46,7 +46,7 @@ math: false
 ### 自定义 Snippets
 
 
-[CHEERFUL]({{< relref "test" >}})
+[CHEERFUL]({{< relref "/test" >}})
 
 新建 content 目录下的 test.md 文件：
 
@@ -116,6 +116,9 @@ ${<num>:<prefill text>}
 - `$0`：移动的终点，移动到此处时结束，不能再反向移动
 
 [显示内容]({{< relref "临床常见病原微生物#葡萄球菌" >}})
+
 relref指向ID
 
 hugo new diary/2023/05/22.md
+
+更新主题：`./update_theme.sh`

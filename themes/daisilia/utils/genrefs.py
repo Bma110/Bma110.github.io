@@ -5,7 +5,7 @@ import sys
 import re
 import json
 
-rootdir = 'content' + os.sep
+rootdir = 'content/'
 refs = {}
 ref_pattern = r'{{(?:<\s*(?:rel)?ref\s+(?:"(.+?)"|(\S+?))\s*>|%\s*(?:rel)?ref\s+(?:"(.+?)"|(\S+?))\s*%)}}'
 heading_pattern = r'^(#{1,6})\s+(?P<title>.*?)\s*({(.*#(\S*)|(?:.*\s|)id="(\S*)")*(.*#(?P<id1>\S*)|(?:.*\s|)id="(?P<id2>\S*)").*}|{.*})?$'
@@ -24,6 +24,13 @@ def check_anchor(file, anchor):
 
   return is_contained
 
+file_pathes = []
+for subdir, _, files in os.walk(rootdir):
+  subdir = subdir.replace('\\', '/')     # Windows
+  for f in files:
+    full_path = (subdir + '/' + f)
+    file_pathes.append(re.sub(r'/+', '/', full_path))
+
 # return file, anchor
 #   - file: file path like 'series/病原生物学/_index.md'
 #   - anchor: anchor, '' for empty heaing and top
@@ -36,22 +43,24 @@ def ref2pos(ref, reldir, path, linenr):
 
   found_realtive = False
   if not file.startswith('/'):                              # relative path
-    for subdir, _, files in os.walk(reldir):
-      for f in files:
-        full_path = os.path.join(subdir, f)
-        if re.search('(' + re.escape(os.sep+file) + ')' + ext_pattern, full_path):
-          found_realtive = True
-          file = full_path
-          if check and anchor and (not check_anchor(full_path, anchor)):
-            print('[Warning] {path}:{linenr}:"{orig}", "{anchor}" not found in "{file}"'.format(orig=ref, file=full_path, anchor=anchor, path=path, linenr=linenr))
+    for file_path in file_pathes:
+      if re.search('(' + reldir + '/.*/' + re.escape(file) + ')' + ext_pattern, file_path):
+        found_realtive = True
+        file = file_path
+        if check and anchor and (not check_anchor(file_path, anchor)):
+          print('[Warning] {path}:{linenr}:"{orig}", "{anchor}" not found in "{file}"'.format(orig=ref, file=file_path, anchor=anchor, path=path, linenr=linenr))
+
+  base = ''
   if file.startswith('/') or found_realtive == False:       # absolute path
-    for subdir, _, files in os.walk(rootdir):
-      for f in files:
-        full_path = os.path.join(subdir, f)
-        if re.search('(' + os.path.join(re.escape(rootdir), "" if file.startswith('/') else ".*", re.escape(file)) + ')' + ext_pattern, full_path):
-          file = full_path
-          if check and anchor and (not check_anchor(full_path, anchor)):
-            print('[Warning] {path}:{linenr}:"{orig}", "{anchor}" not found in "{file}"'.format(orig=ref, file=full_path, anchor=anchor, path=path, linenr=linenr))
+      if file.startswith('/'):
+        base = re.escape(rootdir)[:-1] + re.escape(file)
+      else:
+        base = re.escape(rootdir) + ".*/" + re.escape(file)
+      for file_path in file_pathes:
+        if re.search('(' + base + ')' + ext_pattern, file_path):
+          file = file_path
+          if check and anchor and (not check_anchor(file_path, anchor)):
+            print('[Warning] {path}:{linenr}:"{orig}", "{anchor}" not found in "{file}"'.format(orig=ref, file=file_path, anchor=anchor, path=path, linenr=linenr))
 
   return file[len(rootdir):], anchor
 
@@ -99,7 +108,7 @@ def get_refs(path):
     ref_results = re.findall(ref_pattern, line)
     if ref_results:
       for ref_result in ref_results:
-        slice = re.match(r'(.*'+re.escape(os.sep)+')(.*)', path)
+        slice = re.match(r'(.*/)(.*)', path)
         if slice:
           parent_dir = slice[1]
         else:
@@ -134,9 +143,11 @@ def get_refs(path):
 
 if __name__ == '__main__':
   for subdir, dirs, files in os.walk(rootdir):
+    subdir = subdir.replace('\\', '/')     # Windows
     for file in files:
       if file.endswith('.md'):
-        get_refs(os.path.join(subdir, file))
+        full_path = subdir + '/' + file
+        get_refs(re.sub(r'/+', '/', full_path))
 
   if not os.path.exists('data/'):
     os.makedirs('data')
@@ -146,3 +157,4 @@ if __name__ == '__main__':
   else:
     with open('data/refs.json', 'w', encoding='utf-8') as f:
       json.dump(refs, f, ensure_ascii=False)
+  print('=> cross reference data is saved in data/refs.json')
