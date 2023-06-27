@@ -76,7 +76,11 @@ defaultContentLanguage = 'zh'
   home = ["HTML", "RSS", "JSON"]
 
 # for RMarkdown
-ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$"]
+[module]
+[[module.mounts]]
+  source = 'content'
+  target = 'content'
+  excludeFiles = ['**.Rmd', '**.Rmarkdown']
 
 [caches]
  [caches.getresource]
